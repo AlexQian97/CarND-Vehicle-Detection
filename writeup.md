@@ -14,10 +14,9 @@ The goals / steps of this project are the following:
 [image2]: ./output_images/HOG_example.jpg
 [image3]: ./output_images/slide_windows.jpg
 [image4]: ./output_images/more_windows.jpg
-[image5]: ./examples/bboxes_and_heat.png
-[image6]: ./examples/labels_map.png
-[image7]: ./examples/output_bboxes.png
-[video1]: ./project_video.mp4
+[image5]: ./output_images/heat_maps.png
+[image6]: ./output_images/gray.png
+[video1]: ./project_video_output.mp4
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
 ###Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
@@ -76,19 +75,14 @@ Here's a [link to my video result](./project_video_output.mp4)
 
 I recorded the bounding boxes in recent frames of the video with max number of 15.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
 
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
+Here's an example result showing the heatmap from test_images folder, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
-### Here are six frames and their corresponding heatmaps:
+### Here are the resulting bounding boxes of four test images and their corresponding heatmaps:
 
 ![alt text][image5]
 
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
+### Here is a output example of `scipy.ndimage.measurements.label()` on the integrated heatmap from the first test image:
 ![alt text][image6]
-
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
-
-
 
 ---
 
@@ -98,3 +92,6 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
 
+First, I trained a SVM with HOG features to identify cars from surroundings. Then, I used the sliding window technique to find the cars with the SVM just trained. The bounding boxes are added to a heatmap and a threshold is used to remove some false postives. The final bounding boxes is from `scipy.ndimage.measurements.label()`.
+d
+The differences of `plt.imread` and `cv2.imread` take me a lot of time to make them consistent with each other. My pipeline is likely fail when the cars are far away as the smallest window size is 64 x 64, which is too big to identify the boundary of a car. In addtion, the cars on the oncoming lane disturb the result. It could be improved by remove the oncoming lane when searching cars.
